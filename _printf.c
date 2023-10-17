@@ -1,72 +1,47 @@
 #include "main.h"
 
 /**
- * _printf - Custom printf function.
- * @format: A format string that specifies the format of the output.
+ * _printf - works as printf function
  *
- * This function allowws for formatted output similar to printf. It supports
- * format specifiers %c for characters and %s for strings.
- *
- * Return: The number oof characters printed, or -1 on error.
- */
+ * @format: The format string
+ * Return: The number of characters printed
+*/
 int _printf(const char *format, ...)
 {
-	va_list args;
+	va_list ptr;
+	int i, j, k;
+	char *p, *buf;
 
-	va_start(args, format);
-
-	char *buf = (char *)malloc(1024);
-
+	va_start(ptr, format);
+	buf = malloc(sizeof(char) * 1024);
 	if (buf == NULL)
+		return (0);
+	for (i = 0, j = 0; format[i] != '\0'; i++, j++)
 	{
-		va_end(args);
-		return (-1);
-	}
-	int x = 0;
-	int j = 0;
-
-	while (*format)
-	{
-		if (*format != '%')
+		if (format[i] == '%')
 		{
-			printCharToBuffer(buf, &j, &x, *format);
+			i++;
+			if (format[i] == 'c')
+				buf[j] = (char)va_arg(ptr, int);
+			else if (format[i] == 's')
+			{
+				p = va_arg(ptr, char *);
+				for (k = 0; *(p + k) != '\0';)
+				{
+					buf[j] = *(p + k);
+					k++;
+					if (*(p + k) != '\0')
+						j++;
+				}
+			}
+			else if (format[i] == 'd' || format[i] == 'i')
+				con_num_str(&j, va_arg(ptr, int), (buf + j));
 		}
 		else
-		{
-			format++;
-			if (*format == '\0')
-			{
-				break;
-			}
-			switch (*format)
-			{
-				case 'c':
-					{
-						char c = va_arg(args, int);
-
-						printCharToBuffer(buf, &j, &x, c);
-						break;
-					}
-				case 's':
-					{
-						char *str = va_arg(args, char *);
-
-						printStringToBuffer(buf, &j, &x, str);
-						break;
-					}
-				case '%':
-					{
-						handlePercent(buf, &j, &x);
-						break;
-						default:
-						break;
-					}
-			}
-			format++;
-		}
-		buf[j] = '\0';
-		va_end(args);
-		fputs(buf, stdout);
-		free(buf);
-		return (x);
+			buf[j] = format[i];
 	}
+	va_end(ptr);
+	write(1, buf, strlen(buf));
+	free(buf);
+	return (strlen(buf));
+}
