@@ -7,4 +7,5 @@
 #include <unistd.h>
 #include <limits.h>
 void con_num_str(int *pj, int n, char *pbuf);
+int _printf(const char *format, ...);
 #endif
