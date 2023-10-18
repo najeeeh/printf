@@ -8,28 +8,43 @@
 */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int i, x = 0;
+	va_list ptr;
+	int i, j, k;
+	char *p, *buf;
 
-	va_start(args, format);
-
-	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
+	if (format == NULL)
 		return (-1);
-
-	i = 0;
-	while (format[i] != '\0')
+	va_start(ptr, format);
+	buf = malloc(sizeof(char) * 1024);
+	if (buf == NULL)
+		return (-1);
+	for (i = 0, j = 0; format[i] != '\0'; i++, j++)
 	{
-		if (format[i] == '%' && out_put(format[i + 1]))
+		if (format[i] == '%')
 		{
-			x += print_gfunc(args, format[i + 1]);
 			i++;
+			if (format[i] == 'c')
+				buf[j] = (char)va_arg(ptr, int);
+			else if (format[i] == 's')
+			{
+				p = va_arg(ptr, char *);
+				for (k = 0; *(p + k) != '\0';)
+				{
+					buf[j] = *(p + k);
+					k++;
+					if (*(p + k) != '\0')
+						j++;
+				}
+			}
+			else if (format[i] == '%')
+				buf[j] = '%';
+			else if (format[i] == 'd' || format[i] == 'i')
+				con_num_str(&j, va_arg(ptr, int), (buf + j));
 		}
 		else
-		{
-			x += _putchar(format[i]);
-		}
-		i++;
-	}
-	va_end(args);
-	return (x);
+			buf[j] = format[i};
+	va_end(ptr);
+	write(1, buf, strlen(buf));
+	free(buf);
+	return ((int)strlen(buf));
 }
