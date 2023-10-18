@@ -19,32 +19,33 @@ int _printf(const char *format, ...)
 	if (buf == NULL)
 		return (-1);
 	for (i = 0, j = 0; format[i] != '\0'; i++, j++)
+{
+	if (format[i] == '%')
 	{
-		if (format[i] == '%')
+		i++;
+		if (format[i] == 'c')
+			buf[j] = (char)va_arg(ptr, int);
+		else if (format[i] == 's')
 		{
-			i++;
-			if (format[i] == 'c')
-				buf[j] = (char)va_arg(ptr, int);
-			else if (format[i] == 's')
+			p = va_arg(ptr, char *);
+			for (k = 0; *(p + k) != '\0';)
 			{
-				p = va_arg(ptr, char *);
-				for (k = 0; *(p + k) != '\0';)
-				{
-					buf[j] = *(p + k);
-					k++;
-					if (*(p + k) != '\0')
-						j++;
-				}
+				buf[j] = *(p + k);
+				k++;
+				if (*(p + k) != '\0')
+					j++;
 			}
-			else if (format[i] == '%')
-				buf[j] = '%';
-			else if (format[i] == 'd' || format[i] == 'i')
-				con_num_str(&j, va_arg(ptr, int), (buf + j));
 		}
-		else
-			buf[j] = format[i};
-	va_end(ptr);
-	write(1, buf, strlen(buf));
-	free(buf);
-	return ((int)strlen(buf));
+		else if (format[i] == '%')
+			buf[j] = '%';
+		else if (format[i] == 'd' || format[i] == 'i')
+			con_num_str(&j, va_arg(ptr, int), (buf + j));
+	}
+	else
+		buf[j] = format[i];
+}
+va_end(ptr);
+write(1, buf, strlen(buf));
+free(buf);
+return ((int)strlen(buf));
 }
