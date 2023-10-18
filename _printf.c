@@ -12,10 +12,12 @@ int _printf(const char *format, ...)
 	int i, j, k;
 	char *p, *buf;
 
+	if (format == NULL)
+		return (-1);
 	va_start(ptr, format);
 	buf = malloc(sizeof(char) * 1024);
 	if (buf == NULL)
-		return (0);
+		return (-1);
 	for (i = 0, j = 0; format[i] != '\0'; i++, j++)
 	{
 		if (format[i] == '%')
@@ -34,6 +36,8 @@ int _printf(const char *format, ...)
 						j++;
 				}
 			}
+			else if (format[i] == '%')
+				buf[j] = '%';
 			else if (format[i] == 'd' || format[i] == 'i')
 				con_num_str(&j, va_arg(ptr, int), (buf + j));
 		}
@@ -43,5 +47,5 @@ int _printf(const char *format, ...)
 	va_end(ptr);
 	write(1, buf, strlen(buf));
 	free(buf);
-	return (strlen(buf));
+	return ((int)strlen(buf));
 }
