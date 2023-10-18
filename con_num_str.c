@@ -17,5 +17,5 @@ void con_num_str(int *pj, int n, char *pbuf)/*(&j,va_arg(ptr, int),(buf + j))*/
 	sprintf(b, "%d", n); /*Convert from number to string*/
 	for (i = 0; b[i] != '\0'; i++)
 		pbuf[i] = b[i];
-	*pj = *pj + i - 1; /*adjust index*/
+	*pj = *pj + i ; /* adjust index*/
 }

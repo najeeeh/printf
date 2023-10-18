@@ -44,6 +44,7 @@ int _printf(const char *format, ...)
 	else
 		buf[j] = format[i];
 }
+buf[j] = '\0';
 va_end(ptr);
 write(1, buf, strlen(buf));
 free(buf);
