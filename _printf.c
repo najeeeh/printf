@@ -24,17 +24,12 @@ int _printf(const char *format, ...)
 	{
 		i++;
 		if (format[i] == 'c')
-			buf[j] = (char)va_arg(ptr, int);
+		{
+			print_char(buf, &j, (char)va_arg(ptr, int));
+		}
 		else if (format[i] == 's')
 		{
-			p = va_arg(ptr, char *);
-			for (k = 0; *(p + k) != '\0';)
-			{
-				buf[j] = *(p + k);
-				k++;
-				if (*(p + k) != '\0')
-					j++;
-			}
+			print_string(buf, &j, va_arg(ptr, const char *));
 		}
 		else if (format[i] == '%')
 			buf[j] = '%';
