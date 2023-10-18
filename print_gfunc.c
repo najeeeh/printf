@@ -15,6 +15,8 @@ int print_gfunc(va_list args, char format)
 		{"c", print_char},
 		{"s", print_string},
 		{"%", print_percent},
+		{"d", print_int},
+		{"i", print_int},
 		{NULL, NULL}
 	};
 	int i, x = 0;
